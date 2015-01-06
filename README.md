@@ -1,4 +1,4 @@
-#Welcome to Checkmate
+#Welcome to Checkmate!
 
 [![Build Status](https://travis-ci.org/quantifiedcode/checkmate.svg?branch=master)](https://travis-ci.org/quantifiedcode/checkmate)
 [![PyPi version](https://pypip.in/v/checkmate/badge.png)](https://pypi.python.org/pypi/checkmate)
