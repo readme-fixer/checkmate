@@ -1,6 +1,0 @@
-pylint
-pyflakes
-pep8
-six
-blitzdb
-pyyaml
