@@ -304,7 +304,8 @@ class Command(BaseCommand):
                                     for pk in file_revisions_by_pk.keys()
                                     if not pk in filtered_file_revisions_by_pk
                                   ]
-        logger.info("Excluding %d file revisions:" % len(excluded_file_revisions))
+
+        logger.info("Excluding %d file revisions" % len(excluded_file_revisions))
 
         file_revisions = filtered_file_revisions
         file_revisions_by_pk = filtered_file_revisions_by_pk

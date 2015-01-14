@@ -112,6 +112,7 @@ class Command(AnalyzeCommand):
             file_revisions = snapshot.get_git_file_revisions()
 
             code_environment = CodeEnvironment(file_revisions,settings = self.get_settings(branch))
+            code_environment.env['branch'] = branch
 
             if analyze_snapshot:
                 snapshot = self.analyze_snapshot(snapshot,

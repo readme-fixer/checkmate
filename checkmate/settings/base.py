@@ -118,7 +118,7 @@ def load_plugin(module,name = None):
     if hasattr(module,'top_level_commands'):
         commands.update(module.top_level_commands)
 
-def load_plugins(abort_on_error = False,verbose = True):
+def load_plugins(abort_on_error = False,verbose = False):
     for name,module_name in plugins.items():
         try:
             module = importlib.import_module(module_name+'.setup')
