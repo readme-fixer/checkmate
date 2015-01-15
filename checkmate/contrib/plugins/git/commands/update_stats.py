@@ -84,11 +84,11 @@ class Command(BaseCommand):
 
             issues = list(self.backend.filter(self.project.Issue,query))
 
-            environment = CodeEnvironment([],analyzers,aggregators = [
+            environment = CodeEnvironment([],analyzers,aggregators = {'path' :
                 {'mapper' : 
                     lambda f: directory_splitter(f['path'],
                         include_filename = False)
-                }])
+                }})
 
             group_by = ["language","analyzer","code"]
             issues_summary = environment.summarize_issues(issues,group_by = group_by)
