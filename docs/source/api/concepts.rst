@@ -40,7 +40,7 @@ name, as well as information about the location of the issue (i.e. file revision
 Commands
 ========
 
-All of checkmate's functionality is exposed through **commands*+. All commands inherit form a `:ref:BaseCommand`
+All of checkmate's functionality is exposed through **commands**. All commands inherit form a `:ref:BaseCommand`
 class and accept a range of parameters. Currently there are commands to deal with file-based projects, as well as 
 `git` projects.
 
