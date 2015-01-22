@@ -65,7 +65,7 @@ class FormatAnalyzer(BaseAnalyzer):
         except KeyboardInterrupt:
             raise
         except:
-            print "Cannot read source file: %s" % module.path
+            print "Cannot read source file: %s" % file_revision.path
             pass
         return {
             'stats' : stats,
