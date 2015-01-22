@@ -24,7 +24,6 @@ from __future__ import unicode_literals
 import os
 import subprocess
 import datetime
-import pprint
 import re
 import time
 import logging
@@ -489,6 +488,6 @@ class Repository(object):
         try:
             file_content = self.check_output(["git","cat-file","blob","%s" % (sha,)])
         except subprocess.CalledProcessError:
-            traceback.print_exc()
+            logger.error(traceback.format_exc())
             raise IOError
         return file_content

@@ -310,7 +310,7 @@ class Command(BaseCommand):
         file_revisions = filtered_file_revisions
         file_revisions_by_pk = filtered_file_revisions_by_pk
 
-        max_file_revisions = 300
+        max_file_revisions = 1000
         if len(file_revisions) > max_file_revisions:
 
             if not 'snapshot_issues' in snapshot:
@@ -324,7 +324,7 @@ class Command(BaseCommand):
                         }
                     })
 
-            logger.error("Too many file revisions (%d) in snapshot, truncating at %d" % 
+            logger.warning("Too many file revisions (%d) in snapshot, truncating at %d" %
                          (len(file_revisions),max_file_revisions))
             file_revisions_by_pk = dict(sorted(file_revisions_by_pk.items(),
                                                key = lambda x:x[0])[:max_file_revisions])
