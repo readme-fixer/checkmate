@@ -356,36 +356,29 @@ class Command(BaseCommand):
                             }))
         logger.info("Found %d existing issues..." % len(snapshot_issues))
 
+        #We set the project information in the snapshot.
+        snapshot.project = self.project
+        snapshot.file_revisions = [fr.pk for fr in file_revisions_dict.values()]
         code_environment.env['snapshot'] = snapshot
+
         try:
             while i < len(new_file_revisions):
-
                 j = i+10 if i+10 < len(new_file_revisions) else len(new_file_revisions)
-
                 logger.info("Analyzing and saving: %d - %d (%d remaining)" % 
                     (i, j, len(new_file_revisions) - i ))
-
                 file_revisions_slice = new_file_revisions[i:j]
                 analyzed_file_revisions = code_environment.analyze_file_revisions(file_revisions_slice)
-
                 logger.info("Annotating and saving file revisions...")
-
                 annotations = self.annotate_file_revisions(snapshot,analyzed_file_revisions)
-
                 if 'issues' in annotations:
                     snapshot_issues.extend(annotations['issues'])
-
                 for file_revision in analyzed_file_revisions:
                     self.backend.save(file_revision)
                 self.backend.commit()
-
                 for issue in annotations['issues']:
                     self.backend.save(issue)
-
                 self.backend.commit()
-
                 i+=10
-
             logger.info("Summarizing file revisions...")
             snapshot.summary = code_environment.summarize(file_revisions_dict.values())
             logger.info("Summarizing issues...")
@@ -394,11 +387,8 @@ class Command(BaseCommand):
             del code_environment.env['snapshot']
 
         snapshot.analyzed = True
-        snapshot.project = self.project
 
         logger.info("Saving snapshot...")
-
-        snapshot.file_revisions = [fr.pk for fr in file_revisions_dict.values()]
 
         self.backend.save(snapshot)
         self.backend.commit()
