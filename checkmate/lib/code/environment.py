@@ -52,7 +52,7 @@ class AnalysisTimeAnalyzer(BaseAnalyzer):
 
         return dict(stats)
 
-def update_settings(all_analyzers,settings,type_name = "analyzers"):
+def update_analyzers(all_analyzers,settings,type_name = "analyzers"):
     disabled_by_default = False
     if '%s_disabled_by_default' % type_name in settings:
         disabled_by_default = True
@@ -114,13 +114,13 @@ class CodeEnvironment(object):
     @property
     def analyzers(self):
         if self._analyzers is None:
-            self._analyzers = update_settings(self._all_analyzers,self.settings,"analyzers")
+            self._analyzers = update_analyzers(self._all_analyzers,self.settings,"analyzers")
         return self._analyzers
 
     @property
     def aggregators(self):
         if self._aggregators is None:
-            self._aggregators = update_settings(self._all_aggregators,self.settings,"aggregators")
+            self._aggregators = update_analyzers(self._all_aggregators,self.settings,"aggregators")
         return self._aggregators
 
     @property

@@ -104,6 +104,9 @@ default_checkignore = """*/site-packages/*
 """
 
 import importlib
+import logging
+
+logger = logging.getLogger(__name__)
 
 def load_plugin(module,name = None):
     logger.debug("Loading plugin: %s" % name)
@@ -124,19 +127,34 @@ def load_plugins(abort_on_error = False,verbose = False):
             module = importlib.import_module(module_name+'.setup')
             load_plugin(module,name)
         except:
-            logger.error("Cannot import plugins %s (module %s)" % (name,module_name))
+            logger.error("Cannot import plugin %s (module %s)" % (name,module_name))
             if verbose:
-                sys.stderr.write(traceback.format_exc())
+                logger.error(traceback.format_exc())
             if abort_on_error:
                 raise
 
-def get_issues_data():
-    issue_data = {}
+def get_issues_data(settings = None):
+    issues_data = {}
+    if settings is None:
+        settings = {}
     for name,analyzer in analyzers.items():
-        language_data = issue_data.setdefault(analyzer['language'],{'title' : analyzer['language']})
-        if 'error_data' in analyzer:
+        language_data = issues_data.setdefault(analyzer['language'],{'title' : analyzer['language']})
+        if 'issues_data' in analyzer:
             analyzers_data = language_data.setdefault('analyzers',{})
             analyzers_data[name] = {'title' : analyzer['title']}
-            if 'error_data' in analyzer:
-                analyzers_data[name]['codes'] = analyzer['error_data']
-    return issue_data
+            if 'issues_data' in analyzer:
+                analyzers_data[name]['codes'] = analyzer['issues_data'].copy()
+            if 'analyzers' in settings and name in settings['analyzers']:
+                analyzer_settings = settings['analyzers'][name]
+                if 'disable_all' in analyzers_settings and analyzers_settings['ignore_all']:
+                    analyzers_data[name]['codes'] = {}
+                    if 'enable' in analyzer_settings:
+                        for code in analyzer_settings['enable']:
+                            if code in analyzer['issues_data']:
+                                analyzers_data[name]['codes'][code] = analyzer['issues_data'][code]
+                else:
+                    if 'ignore' in analyzer_settings:
+                        for code in analyzer_settings['ignore']:
+                            if code in analyzers_data[name]['codes']:
+                                del analyzers_data[name]['codes'][code]
+    return issues_data

@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 from .analyzer import JSHintAnalyzer
-from .error_data import error_data
+from .issues_data import issues_data
 
 analyzers = {
     'jshint' :
@@ -27,6 +27,6 @@ analyzers = {
             'title' : 'JSHint',
             'class' : JSHintAnalyzer,
             'language' : 'javascript',
-            'error_data' : error_data,
+            'issues_data' : issues_data,
         },
 }

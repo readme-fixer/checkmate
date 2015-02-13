@@ -28,6 +28,8 @@ import time
 import datetime
 import logging
 
+from checkmate.helpers.checkmate import parse_checkmate_settings
+
 logger = logging.getLogger(__name__)
 
 class BaseDocument(Document):
@@ -137,6 +139,16 @@ class DiskProject(BaseDocument):
     def initialize(self):
         if not hasattr(self,'disk_snapshots'):
             self.disk_snapshots = []
+
+    def get_settings(self):
+        settings = {}
+        if 'settings' in self:
+            settings.update(self.settings)
+        settings_filename = os.path.join(self.path,'.checkmate.yml')
+        if os.path.exists(settings_filename):
+            with open(settings_filename,"r") as settings_file:
+                settings = parse_checkmate_settings(settings_file.read())
+        return settings
 
     def get_disk_file_revisions(self,file_filters = [],path_filters = []):
 

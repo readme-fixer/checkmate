@@ -161,21 +161,9 @@ class Command(BaseCommand):
 
         return diff
 
-    def get_settings(self):
-        settings = {}
-        if 'settings' in self.project:
-            settings.update(self.project.settings)
-        settings_filename = os.path.join(self.project.path,'.checkmate.yml')
-        if os.path.exists(settings_filename):
-            with open(settings_filename,"r") as settings_file:
-                settings = parse_settings(settings_file.read())
-        if 'settings' in self.opts:
-            settings.update(self.opts['settings'])
-        return settings
-
     def run(self):
 
-        settings = self.get_settings()
+        settings = self.project.get_settings()
 
         if 'ignore' in settings:
             checkignore = settings['ignore']

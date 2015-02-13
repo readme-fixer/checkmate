@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 from .lib.repository import Repository
 from checkmate.lib.models import BaseDocument,DiskProject
+from checkmate.helpers.checkmate import parse_checkmate_settings
 
 class Issue(BaseDocument):
 
@@ -156,3 +157,45 @@ class GitProject(DiskProject):
             snapshot.pk = uuid.uuid4().hex
             snapshots.append(snapshot)
         return snapshots
+
+
+    def get_settings(self,branch = None):
+        """
+        We get the settings for the current project. Here, we proceed as follows:
+
+        * First, we try to get the settings from the project directly
+        * Then, we also check if settings are contained in the options to the command
+        * Finally, we check if the master or default branch of the repository contains 
+          a .checkmate.yml file, and if it does we load it.
+        """
+        settings = {}
+        if 'settings' in self:
+            logger.info("Getting settings from project.")
+            settings.update(self.settings)
+        if not ('ignore_checkmate_yml' in settings and settings['ignore_checkmate_yml']):
+            try:
+                logger.info("Trying to load settings from .checkmate.yml.")
+                if 'default_branch' in self:
+                    default_branch = self.default_branch
+                else:
+                    default_branch = "master"
+                branches = self.repository.get_branches()
+                if 'origin/'+default_branch in branches:
+                    latest_commit = self.repository.get_commits(default_branch,limit = 1)
+                    try:
+                        checkmate_file_content = self.repository\
+                                         .get_file_content(latest_commit['sha'],'.checkmate.yml')
+                        try:
+                            checkmate_settings = parse_checkmate_settings(checkmate_file_content)
+                            if 'no_defaults' in checkmate_settings and checkmate_settings['no_defaults']:
+                                settings = checkmate_settings
+                            else:
+                                settings.update(checkmate_settings)
+                        except:
+                            logger.error("Cannot parse checkmate file!")
+                    except:
+                        logger.error("No .checkmate.yml file found!")
+            except:
+                logger.error("Cannot extract settings from project!")
+                logger.error(traceback.format_exc())
+        return settings

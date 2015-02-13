@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 from .analyzer import Pep8Analyzer
-from .error_data import error_data
+from .issues_data import issues_data
 
 analyzers = {
     'pep8' :
@@ -26,6 +26,6 @@ analyzers = {
             'title' : 'Pep-8',
             'class' : Pep8Analyzer,
             'language' : 'python',
-            'error_data' : error_data,
+            'issues_data' : issues_data,
         },
 }

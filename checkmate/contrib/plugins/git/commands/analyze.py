@@ -25,6 +25,7 @@ from ..lib.repository import group_snapshots_by_date,get_first_date_for_group
 
 import time
 import datetime
+import traceback
 import logging
 
 from checkmate.lib.code import CodeEnvironment
@@ -86,14 +87,6 @@ class Command(AnalyzeCommand):
                                               'snapshot_a' : first_snp.sha,
                                               'snapshot_b' : last_snp.sha}])
 
-    def get_settings(self,branch):
-        settings = {}
-        if 'settings' in self.project:
-            settings.update(self.project.settings)
-        if 'settings' in self.opts:
-            settings.update(self.opts['settings'])
-        return settings
-
     def analyze_and_generate_diffs(self,branch,snapshots,diff_list):
 
         analyzed_snapshots = {}
@@ -111,8 +104,9 @@ class Command(AnalyzeCommand):
 
             file_revisions = snapshot.get_git_file_revisions()
 
-            code_environment = CodeEnvironment(file_revisions,settings = self.get_settings(branch))
+            code_environment = CodeEnvironment(file_revisions,settings = self.project.get_settings(branch))
             code_environment.env['branch'] = branch
+            code_environment.env['project'] = project
 
             if analyze_snapshot:
                 snapshot = self.analyze_snapshot(snapshot,

@@ -18,7 +18,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-error_data = {
+issues_data = {
     "UndefinedName" : {
                         "title" : "undefined variable",
                         "categories" : ["correctness"],

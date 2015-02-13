@@ -29,9 +29,9 @@ class BaseAnalyzer(object):
     data and issues obtained for different file revisions or snapshots.
     """
 
-    def __init__(self,code_environment,params = None,ignore = None):
+    def __init__(self,code_environment,settings = None,ignore = None):
         self.code_environment = code_environment
-        self.params = params
+        self.settings = settings
         if ignore is not None:
             self.ignore = {}
             for code in ignore:
