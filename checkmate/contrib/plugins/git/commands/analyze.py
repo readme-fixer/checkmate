@@ -106,7 +106,7 @@ class Command(AnalyzeCommand):
 
             code_environment = CodeEnvironment(file_revisions,settings = self.project.get_settings(branch))
             code_environment.env['branch'] = branch
-            code_environment.env['project'] = project
+            code_environment.env['project'] = self.project
 
             if analyze_snapshot:
                 snapshot = self.analyze_snapshot(snapshot,

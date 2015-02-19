@@ -268,10 +268,10 @@ class GitProject(DiskProject):
                             else:
                                 settings.update(checkmate_settings)
                         except:
-                            logger.error("Cannot parse checkmate file!")
+                            logger.debug("Cannot parse checkmate file!")
                     except:
-                        logger.error("No .checkmate.yml file found!")
+                        logger.debug("No .checkmate.yml file found!")
             except:
-                logger.error("Cannot extract settings from project!")
-                logger.error(traceback.format_exc())
+                logger.debug("Cannot extract settings from project!")
+                logger.debug(traceback.format_exc())
         return settings
