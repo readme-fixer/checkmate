@@ -76,7 +76,16 @@ class Reporter(BaseReporter):
             'data' : {'description' : (warning.message % warning.message_args)},
             'location' : (((warning.lineno,warning.col),(warning.lineno,None)),),
         }
-        if len(self._issues) > 1000:
-            raise ValueError("Too many issues in file, bailing out!")
+
+        if len(self._issues) > 100:
+            if self._issues[-1]['code'] != 'TooManyIssues':
+                issue = {
+                    'code' : 'TooManyIssues',
+                    'data' : {},
+                    'location' : (((None,None),(None,None)),),
+                }
+            else:
+                return
+
         self._issues.append(issue)
 

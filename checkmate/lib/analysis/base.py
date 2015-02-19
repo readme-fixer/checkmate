@@ -21,6 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 import abc
 
+class AnalyzerSettingsError(BaseException):
+    
+    def __init__(self,errors):
+        "Errors should be a dictionary"
+        self.errors = errors
+
 class BaseAnalyzer(object):
 
     """
@@ -31,11 +37,18 @@ class BaseAnalyzer(object):
 
     def __init__(self,code_environment,settings = None,ignore = None):
         self.code_environment = code_environment
+        if settings:
+            self.validate_settings(settings)
         self.settings = settings
         if ignore is not None:
             self.ignore = {}
             for code in ignore:
                 self.ignore[code] = True
+
+    @classmethod
+    def validate_settings(cls,settings):
+        #should raise AnalyzerSettingsError if the settings are not valid
+        raise NotImplementedError
 
     @abc.abstractmethod
     def analyze(self,file_revision):

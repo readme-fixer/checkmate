@@ -96,8 +96,15 @@ class Reporter(pep8.BaseReport):
             'location' : (((line_number,offset),(line_number,None)),),
         }
 
-        if len(self._issues) > 1000:
-            raise ValueError("Too many issues in file, bailing out!")
+        if len(self._issues) > 100:
+            if self._issues[-1]['code'] != 'TooManyIssues':
+                issue = {
+                    'code' : 'TooManyIssues',
+                    'data' : {},
+                    'location' : (((None,None),(None,None)),),
+                }
+            else:
+                return
 
         self._issues.append(issue)
         pep8.BaseReport.error(self,line_number,offset,text,check)

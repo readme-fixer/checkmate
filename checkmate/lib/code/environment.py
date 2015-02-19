@@ -354,9 +354,6 @@ class CodeEnvironment(object):
             except Exception as e:
                 if self.raise_on_analysis_error:
                     raise
-                logger.error("Error when running analyzer %s on file %s:" % 
-                             (analyzer_name,file_revision.path))
-                logger.error(traceback.format_exc())
                 issue = {
                     'code' : 'AnalysisError',
                     'analyzer' : analyzer_name,
