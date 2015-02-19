@@ -146,7 +146,7 @@ def get_issues_data(settings = None):
                 analyzers_data[name]['codes'] = analyzer['issues_data'].copy()
             if 'analyzers' in settings and name in settings['analyzers']:
                 analyzer_settings = settings['analyzers'][name]
-                if 'disable_all' in analyzers_settings and analyzers_settings['ignore_all']:
+                if 'disable_all' in analyzer_settings and analyzer_settings['ignore_all']:
                     analyzers_data[name]['codes'] = {}
                     if 'enable' in analyzer_settings:
                         for code in analyzer_settings['enable']:
