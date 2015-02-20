@@ -137,7 +137,17 @@ def get_issues_data(settings = None):
     issues_data = {}
     if settings is None:
         settings = {}
+
+    disable_all = False
+    if 'analyzers' in settings and 'disable_all' in settings['analyzers'] and settings['analyzers']['disable_all']:
+        disable_all = True
+
     for name,analyzer in analyzers.items():
+        if disable_all and (not 'analyzers' in settings \
+                            or not name in settings['analyzers'] \
+                            or not 'enabled' in settings['analyzers'][name] \
+                            or not settings['analyzers'][name]['enabled']):
+            continue
         language_data = issues_data.setdefault(analyzer['language'],{'title' : analyzer['language']})
         if 'issues_data' in analyzer:
             analyzers_data = language_data.setdefault('analyzers',{})
@@ -146,7 +156,7 @@ def get_issues_data(settings = None):
                 analyzers_data[name]['codes'] = analyzer['issues_data'].copy()
             if 'analyzers' in settings and name in settings['analyzers']:
                 analyzer_settings = settings['analyzers'][name]
-                if 'disable_all' in analyzer_settings and analyzer_settings['ignore_all']:
+                if 'disable_all' in analyzer_settings and analyzer_settings['disable_all']:
                     analyzers_data[name]['codes'] = {}
                     if 'enable' in analyzer_settings:
                         for code in analyzer_settings['enable']:
