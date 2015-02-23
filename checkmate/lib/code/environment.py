@@ -54,12 +54,12 @@ class AnalysisTimeAnalyzer(BaseAnalyzer):
 
 def update_analyzers(all_analyzers,settings,type_name = "analyzers"):
     disabled_by_default = False
-    if '%s_disabled_by_default' % type_name in settings:
-        disabled_by_default = True
 
     if type_name in settings:
         analyzers = {}
         for name,params in all_analyzers.items():
+            if 'enable' in settings[type_name] and not name in settings[type_name]['enable']:
+                continue
             analyzers[name] = copy.copy(params)
             if not 'kwargs' in analyzers[name]:
                 analyzers[name]['kwargs'] = {}
@@ -73,8 +73,6 @@ def update_analyzers(all_analyzers,settings,type_name = "analyzers"):
                 del analyzers[name]
         return analyzers
     else:
-        if disabled_by_default:
-            return {}
         return all_analyzers
 
 class CodeEnvironment(object):
@@ -358,11 +356,11 @@ class CodeEnvironment(object):
                     'code' : 'AnalysisError',
                     'analyzer' : analyzer_name,
                     'data' : {
-                        'exception' : traceback.format_exc(),
-                        'exception_class' : e.__class__.__name__
+                        'exception' : 'An exception occured during the analysis of this file.',
                         },
                     'location' : (((None,None),(None,None)),)
                 }
+                logger.error(traceback.format_exc())
                 results[analyzer_name] = {'issues' :  [issue]}
 
         results['analysis_time'] = dict(analysis_time)

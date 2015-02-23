@@ -25,13 +25,14 @@ import uuid
 import time
 import datetime
 import logging
+import copy
 
 logger = logging.getLogger(__name__)
 
 from .lib.repository import Repository
 from checkmate.lib.models import BaseDocument,DiskProject
 from checkmate.helpers.checkmate import parse_checkmate_settings
-from checkmate.settings import analyzers
+from checkmate.settings import analyzers,get_issues_data
 from checkmate.lib.analysis import AnalyzerSettingsError
 
 class Issue(BaseDocument):
@@ -247,7 +248,7 @@ class GitProject(DiskProject):
         settings = {}
         if 'settings' in self:
             logger.info("Getting settings from project.")
-            settings.update(self.settings)
+            settings.update(copy.deepcopy(self.settings))
         if not ('ignore_checkmate_yml' in settings and settings['ignore_checkmate_yml']):
             try:
                 logger.info("Trying to load settings from .checkmate.yml.")

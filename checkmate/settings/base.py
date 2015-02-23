@@ -141,12 +141,11 @@ def get_issues_data(settings = None):
     disable_all = False
     if 'analyzers' in settings and 'disable_all' in settings['analyzers'] and settings['analyzers']['disable_all']:
         disable_all = True
-
+    enabled_analyzers = []
+    if 'analyzers' in settings and 'enable' in settings['analyzers']:
+        enabled_analyzers = settings['analyzers']['enable']
     for name,analyzer in analyzers.items():
-        if disable_all and (not 'analyzers' in settings \
-                            or not name in settings['analyzers'] \
-                            or not 'enabled' in settings['analyzers'][name] \
-                            or not settings['analyzers'][name]['enabled']):
+        if not name in enabled_analyzers:
             continue
         language_data = issues_data.setdefault(analyzer['language'],{'title' : analyzer['language']})
         if 'issues_data' in analyzer:
@@ -167,4 +166,11 @@ def get_issues_data(settings = None):
                         for code in analyzer_settings['ignore']:
                             if code in analyzers_data[name]['codes']:
                                 del analyzers_data[name]['codes'][code]
+            if name in analyzers_data and 'codes' in analyzers_data[name]:
+                analyzers_data[name]['codes']['AnalysisError'] = {
+                    'severity' : 2,
+                    'title' : 'Analysis error',
+                    'description' : 'An analysis error occured: \n %(occurence.data.exception)s',
+                    'categories' : ['correctness'],
+                }
     return issues_data
