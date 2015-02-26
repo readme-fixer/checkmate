@@ -358,7 +358,8 @@ class CodeEnvironment(object):
                     'data' : {
                         'exception' : 'An exception occured during the analysis of this file.',
                         },
-                    'location' : (((None,None),(None,None)),)
+                    'location' : (((None,None),(None,None)),),
+                    'traceback' : traceback.format_exc()
                 }
                 logger.error(traceback.format_exc())
                 results[analyzer_name] = {'issues' :  [issue]}
