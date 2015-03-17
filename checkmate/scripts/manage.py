@@ -151,19 +151,22 @@ def get_project_and_backend(path):
 
 def main():
 
-    settings.load_plugins()
-
-    CommandClass,command_chain = load_command_class()
     project_path = get_project_path()
+
+    settings.update_config(settings.load_config())
+    settings.load_plugins()
 
     if project_path:
         project,backend = get_project_and_backend(project_path)
     else:
-        if CommandClass.requires_valid_project:
-            sys.stderr.write("Cannot find a checkmate project in the current directory tree, aborting.\n")
-            exit(-1)
         project = None
         backend = None
+
+    CommandClass,command_chain = load_command_class()
+
+    if CommandClass.requires_valid_project and project is None:
+        sys.stderr.write("Cannot find a checkmate project in the current directory tree, aborting.\n")
+        exit(-1)
 
     command = CommandClass(project,backend,
                            prog = sys.argv[0]+" "+" ".join(command_chain),

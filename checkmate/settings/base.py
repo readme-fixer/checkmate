@@ -105,8 +105,32 @@ default_checkignore = """*/site-packages/*
 
 import importlib
 import logging
+import os
+import yaml
 
 logger = logging.getLogger(__name__)
+
+def update_config(config):
+    if config is None:
+        return
+    if 'plugins' in config:
+        plugins.update(config['plugins'])
+    if 'commands' in config:
+        plugins.update(config['commands'])
+    if 'language_patterns' in config:
+        language_patterns.update(config['language_patterns'])
+
+def load_config(project = None):
+    home = os.path.expanduser('~')
+    possible_config_paths = [os.path.join(home),os.path.join(os.getcwd())]
+    if project is not None:
+        config_paths.insert(0,os.path.abspath(project.path))
+    for possible_config_path in possible_config_paths:
+        possible_config_filename = os.path.join(possible_config_path,'.checkmate-rc')
+        if os.path.exists(possible_config_filename) and os.path.isfile(possible_config_filename):
+            with open(possible_config_filename,'r') as config_file:
+                return yaml.load(config_file.read())
+    return None
 
 def load_plugin(module,name = None):
     logger.debug("Loading plugin: %s" % name)
@@ -126,8 +150,9 @@ def load_plugins(abort_on_error = False,verbose = False):
         try:
             module = importlib.import_module(module_name+'.setup')
             load_plugin(module,name)
-        except:
+        except BaseException as e:
             logger.error("Cannot import plugin %s (module %s)" % (name,module_name))
+            logger.error(traceback.format_exc())
             if verbose:
                 logger.error(traceback.format_exc())
             if abort_on_error:

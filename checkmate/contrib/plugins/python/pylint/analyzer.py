@@ -115,22 +115,23 @@ class Reporter(BaseReporter):
     def add_message(self, msg_id, location, msg):
         """Client API to send a message"""
 
-        if len(self._issues) > 100:
-            if self._issues[-1]['code'] != 'TooManyIssues':
-                issue = {
-                    'code' : 'TooManyIssues',
-                    'data' : {},
-                    'location' : (((None,None),(None,None)),),
-                }
-            else:
-                return
-
         self._messages.append((msg_id,location,msg))
 
     def get_issues(self):
         issues = []
 
+        cnt = 0
         for msg_id,location,msg in self._messages:
+            cnt+=1
+            if cnt > 100:
+                issue = {
+                    'code' : 'TooManyIssues',
+                    'data' : {},
+                    'location' : (((None,None),(None,None)),),
+                }
+                issues.append(issue)
+                break
+
             (filename,filepath,module,line_number,offset) = location
 
             if msg_id.strip()[0] == 'E':

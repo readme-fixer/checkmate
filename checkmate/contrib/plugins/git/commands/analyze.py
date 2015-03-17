@@ -22,6 +22,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 from checkmate.management.commands.analyze import Command as AnalyzeCommand
 from ..lib.repository import group_snapshots_by_date,get_first_date_for_group
+from ..models import GitProject
 
 import time
 import datetime
@@ -107,7 +108,7 @@ class Command(AnalyzeCommand):
             if 'settings' in self.opts:
                 settings = self.opts['settings']
             else:
-                self.project.get_settings(self.backend,branch)
+                settings = self.project.get_settings(self.backend,branch)
 
             code_environment = CodeEnvironment(file_revisions,settings = settings)
             code_environment.env['branch'] = branch
@@ -167,6 +168,10 @@ class Command(AnalyzeCommand):
         self.backend.commit()
 
     def run(self):
+        
+        if not isinstance(self.project,GitProject):
+            logger.error("Not a git project!")
+            return -1
 
         if not self.opts['branch']:
             branches = self.project.repository.get_branches()

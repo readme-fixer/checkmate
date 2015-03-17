@@ -236,7 +236,7 @@ class GitProject(DiskProject):
     def set_settings(self,settings,branch = None):
         self.settings = settings
 
-    def get_settings(self,branch = None):
+    def get_settings(self,backend,branch = None):
         """
         We get the settings for the current project. Here, we proceed as follows:
 

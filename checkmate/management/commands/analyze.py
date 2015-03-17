@@ -163,7 +163,7 @@ class Command(BaseCommand):
 
     def run(self):
 
-        settings = self.project.get_settings()
+        settings = self.project.get_settings(self.backend)
 
         if 'ignore' in settings:
             checkignore = settings['ignore']

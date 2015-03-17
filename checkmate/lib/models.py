@@ -140,7 +140,7 @@ class DiskProject(BaseDocument):
         if not hasattr(self,'disk_snapshots'):
             self.disk_snapshots = []
 
-    def get_settings(self):
+    def get_settings(self,backend = None):
         settings = {}
         if 'settings' in self:
             settings.update(self.settings)
